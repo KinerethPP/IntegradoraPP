@@ -37,6 +37,10 @@ create view view_user_active as
     from users;
 select * from view_user_active;
 
+/*Agrupamiento entre tabla users y persons*/
+SELECT persons.name as Name ,persons.surname as Surname ,persons.lastname as Lastname ,users.rol as Rol ,users.email 
+FROM persons inner join users on users.id_user=users.id_user
+GROUP BY persons.name,persons.surname,persons.lastname,users.rol,users.email  Order by persons.name asc;
 
 -- -----------------------------------------------------
 -- Tabla `Persons`
@@ -60,6 +64,8 @@ CREATE TABLE persons
 );
 # Registro
 insert into persons values (0,1,'Erick Emiliano', 'Morales', 'Velazquez',null,null,null,'7772579788',null,null,now());
+insert into persons values (0,2,'Vania Kinereth', 'Quezada', 'Lopez',null,null,null,'7771436571',null,null,now());
+
 select * from persons;
 #Indice simple 
 create index i_persons_name on persons (name);
@@ -80,10 +86,11 @@ create view view_user_person as
 select * from view_user_person;
 drop view view_user_person;
 /*Agrupacion de la tabla persons y events*/
+/*Group*/
 
-SELECT persons.name as Nombre ,events.name as Evento ,events.event_date as Fecha_Evento ,events.address as Direccion
+SELECT persons.name as Name ,events.name as Event ,events.event_date as Date_Event ,events.address as Address
 FROM events inner join persons on persons.id_person=events.id_person
-GROUP BY persons.name,events.name,events.event_date;
+GROUP BY persons.name,events.name,events.event_date order by events.event_date;
 
 
 -- -----------------------------------------------------
@@ -120,6 +127,12 @@ create view view_address as
     from events;
 select * from view_address;
 drop view view_address;
+/*Agrupamiento entre la tabla postulaciones*/
+
+SELECT persons.name as Name, events.name as Name ,events.event_date as Date_Event ,events.address as Address,postulations.id_postulation as No_Postulations
+FROM events inner join postulations on postulations.id_event=events.id_event
+inner join persons on persons.id_person=events.id_person
+GROUP BY events.name,events.event_date ,events.address,postulations.id_postulation,persons.name;
 
 
 -- -----------------------------------------------------
@@ -191,6 +204,14 @@ create view v_form_info as
         date_update
     from forms;
 select * from v_form_info;
+
+/*Agrupamiento de la tabla forms y persons*/
+SELECT persons.name as Name ,forms.name_form as Name_forms  ,events.name Name_event
+FROM persons 
+inner join forms on forms.id_person=persons.id_person 
+inner join events on events.id_person=persons.id_person
+GROUP BY persons.name,forms.name_form,events.name;
+
 drop view v_form_info;
 
 
@@ -342,4 +363,3 @@ select *
 from v_config;
 
 
-/**/
